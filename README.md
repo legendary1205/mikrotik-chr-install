@@ -47,37 +47,21 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 
 ### Method 1: Direct Install (Recommended)
 
-bash
+```bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-bash
+```
 ### Method 2: Manual Download with wget
 
 Download the script:
-bash
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-bash
-Make it executable:
-bash
-chmod +x install.sh
-bash
-Run the script:
-bash
-sudo ./install.sh
-bash
+```bash
+wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
+```
 ### Method 3: Using curl
 
 Download:
-bash
-curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-bash
-Make executable:
-bash
-chmod +x install.sh
-bash
-Run:
-bash
-sudo ./install.sh
-bash
+```bash
+curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
+```
 ## 🎮 Usage
 
 After running the script, you'll see three options:
@@ -102,9 +86,9 @@ After running the script, you'll see three options:
 ### Network Interface Detection
 
 Check available interfaces:
-bash
+```bash
 ip link show
-bash
+```
 Common interface names:
 - `eth0` - Traditional naming
 - `ens3`, `ens18` - Predictable naming
@@ -113,9 +97,9 @@ Common interface names:
 ### Disk Selection
 
 List available disks:
-bash
+```bash
 lsblk
-bash
+```
 Common disk types:
 - `vda` - Virtual disk (VPS/Cloud)
 - `sda` - Physical disk (Dedicated servers)
@@ -162,9 +146,9 @@ Server will reboot in 10 seconds...
 ### Accessing Your Router
 
 **Via SSH:**
-bash
+```bash
 ssh admin@your-server-ip
-bash
+```
 **Via WebFig:**
 
 http://your-server-ip
@@ -178,10 +162,10 @@ Download from [MikroTik official site](https://mikrotik.com/download)
 <summary><b>Script won't execute</b></summary>
 
 Make sure it's executable:
-bash
+```bash
 chmod +x install.sh
 sudo ./install.sh
-bash
+```
 </details>
 
 <details>
