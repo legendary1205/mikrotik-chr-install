@@ -52,7 +52,7 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 ```
 ### Method 2: Manual Download with wget
 
-Download the script:
+Download & install the script:
 ```bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
 ```
