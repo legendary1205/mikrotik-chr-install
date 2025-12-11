@@ -33,9 +33,9 @@
 ## 🚀 Quick Start
 
 Install with a single command:
-```bash
+bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-
+bash
 ## 📋 Requirements
 
 - Ubuntu/Debian-based distribution
@@ -49,41 +49,35 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 
 bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
+bash
+### Method 2: Manual Download with wget
 
-### Method 2: Download and Run
-
-**Step 1:** Download the script
-
+Download the script:
 bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-
-**Step 2:** Make it executable
-
+bash
+Make it executable:
 bash
 chmod +x install.sh
-
-**Step 3:** Run the installer
-
+bash
+Run the script:
 bash
 sudo ./install.sh
-
+bash
 ### Method 3: Using curl
 
-**Step 1:** Download with curl
-
+Download:
 bash
 curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-
-**Step 2:** Add execute permission
-
+bash
+Make executable:
 bash
 chmod +x install.sh
-
-**Step 3:** Execute the script
-
+bash
+Run:
 bash
 sudo ./install.sh
-
+bash
 ## 🎮 Usage
 
 After running the script, you'll see three options:
@@ -108,10 +102,9 @@ After running the script, you'll see three options:
 ### Network Interface Detection
 
 Check available interfaces:
-
 bash
 ip link show
-
+bash
 Common interface names:
 - `eth0` - Traditional naming
 - `ens3`, `ens18` - Predictable naming
@@ -120,10 +113,9 @@ Common interface names:
 ### Disk Selection
 
 List available disks:
-
 bash
 lsblk
-
+bash
 Common disk types:
 - `vda` - Virtual disk (VPS/Cloud)
 - `sda` - Physical disk (Dedicated servers)
@@ -170,16 +162,14 @@ Server will reboot in 10 seconds...
 ### Accessing Your Router
 
 **Via SSH:**
-
 bash
 ssh admin@your-server-ip
-
+bash
 **Via WebFig:**
-
 
 http://your-server-ip
 
-**Via WinBox:**  
+**Via WinBox:**
 Download from [MikroTik official site](https://mikrotik.com/download)
 
 ## 🐛 Troubleshooting
@@ -188,12 +178,10 @@ Download from [MikroTik official site](https://mikrotik.com/download)
 <summary><b>Script won't execute</b></summary>
 
 Make sure it's executable:
-
 bash
 chmod +x install.sh
-
-bash
 sudo ./install.sh
+bash
 </details>
 
 <details>
@@ -208,20 +196,11 @@ Check:
 <details>
 <summary><b>Installation fails</b></summary>
 
-Verify correct disk name:
-
-bash
-lsblk
-
-Check disk space:
-
-bash
-df -h
-
-Verify network interface:
-
-bash
-ip link show
+Verify:
+- Correct disk name (`lsblk`)
+- Sufficient disk space (`df -h`)
+- Valid network interface (`ip link show`)
+- Root privileges
 </details>
 
 <details>
