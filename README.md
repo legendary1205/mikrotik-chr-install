@@ -13,10 +13,6 @@ Select Language
 
 ---
 
-### 🔥 Quick Install (Direct Link)
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/chr_install -O chr_install
-
-bash chr_install
 
 
 
