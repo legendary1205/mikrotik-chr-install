@@ -54,14 +54,22 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 
 bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
+
+bash
 chmod +x install.sh
+
+bash
 sudo ./install.sh
 
 **Or** using curl:
 
 bash
 curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
+
+bash
 chmod +x install.sh
+
+bash
 sudo ./install.sh
 
 ## 📝 Usage
@@ -166,11 +174,11 @@ Or use WinBox/WebFig:
 ## 🐛 Troubleshooting
 
 ### Script won't run
+
 bash
-# Make sure you have execute permissions
 chmod +x install.sh
 
-# Run with sudo
+bash
 sudo ./install.sh
 
 ### Download fails
@@ -261,14 +269,22 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 
 bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
+
+bash
 chmod +x install.sh
+
+bash
 sudo ./install.sh
 
 **یا** با استفاده از curl:
 
 bash
 curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
+
+bash
 chmod +x install.sh
+
+bash
 sudo ./install.sh
 
 ## 📝 نحوه استفاده
@@ -373,11 +389,11 @@ ssh admin@your-server-ip
 ## 🐛 عیب‌یابی
 
 ### اسکریپت اجرا نمی‌شود
+
 bash
-# مطمئن شوید مجوز اجرا دارید
 chmod +x install.sh
 
-# با sudo اجرا کنید
+bash
 sudo ./install.sh
 
 ### دانلود با خطا مواجه می‌شود
