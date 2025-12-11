@@ -35,7 +35,7 @@
 نصب با یک دستور:
 ```bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-
+```
 ## 📋 پیش‌نیازها
 
 - سیستم عامل Ubuntu/Debian
@@ -47,37 +47,20 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 
 ### روش 1: نصب مستقیم (پیشنهادی)
 
-bash
+```bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-
+```
 ### روش 2: دانلود دستی با wget
 
-دانلود اسکریپت:
-bash
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-
-اضافه کردن مجوز اجرا:
-bash
-chmod +x install.sh
-
-اجرای اسکریپت:
-bash
-sudo ./install.sh
-
+  دانلود اسکریپت و نصب:
+```bash
+wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
+```
 ### روش 3: استفاده از curl
 
-دانلود:
-bash
-curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
-
-مجوز اجرا:
-bash
-chmod +x install.sh
-
-اجرا:
-bash
-sudo ./install.sh
-
+‍‍‍‍‍```bash
+curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
+```
 ## 🎮 نحوه استفاده
 
 پس از اجرای اسکریپت، سه گزینه خواهید دید:
@@ -102,9 +85,9 @@ sudo ./install.sh
 ### تشخیص کارت شبکه
 
 بررسی کارت‌های موجود:
-bash
+```bash
 ip link show
-
+```
 نام‌های رایج کارت شبکه:
 - `eth0` - نام‌گذاری سنتی
 - `ens3`, `ens18` - نام‌گذاری قابل پیش‌بینی
@@ -113,9 +96,9 @@ ip link show
 ### انتخاب دیسک
 
 لیست دیسک‌های موجود:
-bash
+```bash
 lsblk
-
+```
 انواع رایج دیسک:
 - `vda` - دیسک مجازی (VPS/Cloud)
 - `sda` - دیسک فیزیکی (سرورهای اختصاصی)
@@ -162,9 +145,9 @@ lsblk
 ### دسترسی به روتر
 
 **از طریق SSH:**
-bash
+```bash
 ssh admin@your-server-ip
-
+```
 **از طریق WebFig:**
 
 http://your-server-ip
@@ -178,9 +161,10 @@ http://your-server-ip
 <summary><b>اسکریپت اجرا نمی‌شود</b></summary>
 
 مطمئن شوید که قابل اجرا است:
-bash
+```bash
 chmod +x install.sh
 sudo ./install.sh
+```
 </details>
 
 <details>
