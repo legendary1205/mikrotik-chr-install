@@ -51,7 +51,7 @@ This script:
 Run:
 
 
-bash``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh && chmod +x safe_installer.sh && sudo ./safe_installer.sh ```
+``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh && chmod +x safe_installer.sh && sudo ./safe_installer.sh ```
 
 
 
@@ -71,7 +71,7 @@ This script:
 Run:
 
 
-bash``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh && chmod +x auto_destructive.sh && sudo ./auto_destructive.sh ```
+``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh && chmod +x auto_destructive.sh && sudo ./auto_destructive.sh ```
 
 
 ---
@@ -103,9 +103,8 @@ bash``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-instal
 
 اجرا:
 
-bash```
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh && chmod +x safe_installer.sh && sudo ./safe_installer.sh 
-```
+
+``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh && chmod +x safe_installer.sh && sudo ./safe_installer.sh ```
 
 
 ---
@@ -122,9 +121,8 @@ wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/s
 ⚠ هشدار: کل اطلاعات دیسک انتخاب‌شده پاک می‌شود.
 
 اجرا:
-bash```
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh && chmod +x auto_destructive.sh && sudo ./auto_destructive.sh 
-```
+
+``` wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh && chmod +x auto_destructive.sh && sudo ./auto_destructive.sh ```
 
 
 ---
