@@ -33,9 +33,9 @@
 ## 🚀 Quick Start
 
 Install with a single command:
-bash
+```bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-bash
+```bash
 ## 📋 Requirements
 
 - Ubuntu/Debian-based distribution
