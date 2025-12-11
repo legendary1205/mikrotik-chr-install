@@ -1,54 +1,60 @@
-# MikroTik CHR Installer (Safe + Auto)
+<div align="center">
 
-This repository contains two installer scripts for MikroTik Cloud Hosted Router (CHR):
+<h1>MikroTik CHR Installer</h1>
 
-1) safe_installer.sh  
-   - 100% safe  
-   - Does NOT write to disk  
-   - Auto-detects network  
-   - Builds autorun.scr  
-   - Prepares CHR image  
-   - User installs manually using dd
+<p>Click a button below to switch language</p>
 
-2) auto_destructive.sh  
-   - Fully automatic  
-   - ERASES the primary disk  
-   - Auto-detects NIC + IP + Gateway  
-   - Auto-detects largest disk  
-   - Applies autorun  
-   - Installs CHR and reboots
+<button onclick="document.getElementById('fa').style.display='block'; document.getElementById('en').style.display='none';">🇮🇷 فارسی</button>
+<button onclick="document.getElementById('fa').style.display='none'; document.getElementById('en').style.display='block';">🇺🇸 English</button>
 
----
+</div>
 
-# توضیحات فارسی
+<style>
+.lang-box {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+code {
+  background: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+pre {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+</style>
 
-این ریپو شامل دو اسکریپت برای نصب RouterOS CHR است.
+<!-- ========================= -->
+<!-- ======= فارسی ========== -->
+<!-- ========================= -->
 
-## 1) safe_installer.sh (نسخه امن)
-این نسخه سیستم‌عامل فعلی را تخریب نمی‌کند.  
-کارهایی که انجام می‌دهد:
+<div id="fa" class="lang-box" style="display:none; direction: rtl; text-align: right;">
 
-- تشخیص خودکار کارت شبکه  
-- تشخیص IP و Gateway  
-- دانلود ایمیج CHR  
-- ساخت autorun.scr  
-- تغییر ندادن هیچ دیسکی  
-- مناسب برای هر سیستم‌عامل (Ubuntu، Debian، CentOS، Rocky، Alma و ...)
-
-در پایان دستور dd را نمایش می‌دهد تا خودتان اجرا کنید.
-
-## 2) auto_destructive.sh (نسخه تخریبی و اتوماتیک)
-این نسخه مناسب کاربران حرفه‌ای است.
-
-- دیسک اصلی را پاک می‌کند  
-- سیستم‌عامل فعلی را حذف می‌کند  
-- نصب کامل RouterOS انجام می‌دهد  
-- سپس سیستم را ریبوت می‌کند  
-
-**اخطار: اجرای این نسخه روی هر سروری منجر به حذف کامل سیستم‌عامل میزبان می‌شود.**
+# نصب‌کننده MikroTik CHR  
+این ریپازیتوری شامل دو اسکریپت حرفه‌ای برای نصب و راه‌اندازی MikroTik Cloud Hosted Router است.  
+یکی کاملاً **ایمن**، و دیگری **کاملاً خودکار (خطرناک)**.
 
 ---
 
-# How to use
+## ۱) safe_installer.sh  
+نسخه امن — **هیچ دیسکی را حذف یا فرمت نمی‌کند**  
+این نسخه:
 
-### Safe Version:
+- CHR را دانلود می‌کند  
+- کارت شبکه را شناسایی می‌کند  
+- IP و روت را تنظیم می‌کند  
+- فایل autorun.scr می‌سازد  
+- همه چیز را آماده نصب می‌کند  
+- ولی **عملیات خطرناک dd را انجام نمی‌دهد**
+
+### اجرای نسخه امن:
+```bash
+chmod +x safe_installer.sh
+sudo ./safe_installer.sh
