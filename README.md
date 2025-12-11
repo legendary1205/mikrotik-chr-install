@@ -1,7 +1,5 @@
-(100٪ سازگار با GitHub – نسخه آخر)
 
 
-نمایش کد
 
 
 <div align="center">
@@ -51,11 +49,13 @@ This script:
 - Does **NOT** run dd  
 
 Run:
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh
+
+
+```wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh
 
 chmod +x safe_installer.sh
 
-sudo ./safe_installer.sh
+sudo ./safe_installer.sh```
 
 
 
@@ -73,12 +73,13 @@ This script:
 ⚠ WARNING: Erases all data on selected disk.
 
 Run:
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh
+
+
+```wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh
 
 chmod +x auto_destructive.sh
 
-sudo ./auto_destructive.sh
-
+sudo ./auto_destructive.sh```
 
 
 ---
@@ -109,11 +110,13 @@ sudo ./auto_destructive.sh
 - بدون اجرای dd، سیستم را برای نصب نهایی آماده می‌کند  
 
 اجرا:
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh
+
+
+```wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh
 
 chmod +x safe_installer.sh
 
-sudo ./safe_installer.sh
+sudo ./safe_installer.sh```
 
 
 
@@ -131,14 +134,12 @@ sudo ./safe_installer.sh
 ⚠ هشدار: کل اطلاعات دیسک انتخاب‌شده پاک می‌شود.
 
 اجرا:
-wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh
+
+```wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/auto_destructive.sh
 
 chmod +x auto_destructive.sh
 
-sudo ./auto_destructive.sh
-
-
-نمایش کد
+sudo ./auto_destructive.sh```
 
 
 
