@@ -50,31 +50,37 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 bash
 wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
 
-### Method 2: Manual Download with wget
+### Method 2: Download and Run
 
-Download the script:
+**Step 1:** Download the script
+
 bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
 
-Make it executable:
+**Step 2:** Make it executable
+
 bash
 chmod +x install.sh
 
-Run the script:
+**Step 3:** Run the installer
+
 bash
 sudo ./install.sh
 
 ### Method 3: Using curl
 
-Download:
+**Step 1:** Download with curl
+
 bash
 curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh
 
-Make executable:
+**Step 2:** Add execute permission
+
 bash
 chmod +x install.sh
 
-Run:
+**Step 3:** Execute the script
+
 bash
 sudo ./install.sh
 
@@ -102,6 +108,7 @@ After running the script, you'll see three options:
 ### Network Interface Detection
 
 Check available interfaces:
+
 bash
 ip link show
 
@@ -113,6 +120,7 @@ Common interface names:
 ### Disk Selection
 
 List available disks:
+
 bash
 lsblk
 
@@ -162,14 +170,16 @@ Server will reboot in 10 seconds...
 ### Accessing Your Router
 
 **Via SSH:**
+
 bash
 ssh admin@your-server-ip
 
 **Via WebFig:**
 
+
 http://your-server-ip
 
-**Via WinBox:**
+**Via WinBox:**  
 Download from [MikroTik official site](https://mikrotik.com/download)
 
 ## 🐛 Troubleshooting
@@ -178,8 +188,11 @@ Download from [MikroTik official site](https://mikrotik.com/download)
 <summary><b>Script won't execute</b></summary>
 
 Make sure it's executable:
+
 bash
 chmod +x install.sh
+
+bash
 sudo ./install.sh
 </details>
 
@@ -195,11 +208,20 @@ Check:
 <details>
 <summary><b>Installation fails</b></summary>
 
-Verify:
-- Correct disk name (`lsblk`)
-- Sufficient disk space (`df -h`)
-- Valid network interface (`ip link show`)
-- Root privileges
+Verify correct disk name:
+
+bash
+lsblk
+
+Check disk space:
+
+bash
+df -h
+
+Verify network interface:
+
+bash
+ip link show
 </details>
 
 <details>
