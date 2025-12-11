@@ -1,60 +1,40 @@
 <div align="center">
 
-<h1>MikroTik CHR Installer</h1>
+# MikroTik CHR Installer  
+Select language:
 
-<p>Click a button below to switch language</p>
-
-<button onclick="document.getElementById('fa').style.display='block'; document.getElementById('en').style.display='none';">🇮🇷 فارسی</button>
-<button onclick="document.getElementById('fa').style.display='none'; document.getElementById('en').style.display='block';">🇺🇸 English</button>
+[🇺🇸 English](#english) | [🇮🇷 فارسی](#فارسی)
 
 </div>
 
-<style>
-.lang-box {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  font-size: 15px;
-  line-height: 1.7;
-}
-code {
-  background: #f0f0f0;
-  padding: 2px 5px;
-  border-radius: 4px;
-}
-pre {
-  background: #f0f0f0;
-  padding: 10px;
-  border-radius: 5px;
-  overflow-x: auto;
-}
-</style>
+---
 
-<!-- ========================= -->
-<!-- ======= فارسی ========== -->
-<!-- ========================= -->
+# English
 
-<div id="fa" class="lang-box" style="display:none; direction: rtl; text-align: right;">
+This repository includes two scripts for installing MikroTik Cloud Hosted Router (CHR):
 
-# نصب‌کننده MikroTik CHR  
-این ریپازیتوری شامل دو اسکریپت حرفه‌ای برای نصب و راه‌اندازی MikroTik Cloud Hosted Router است.  
-یکی کاملاً **ایمن**، و دیگری **کاملاً خودکار (خطرناک)**.
+1) **safe_installer.sh**  
+Safe mode — does NOT wipe disks. Prepares everything and lets you run `dd` manually.
+
+2) **auto_destructive.sh**  
+Fully automatic mode — wipes target disk and installs CHR.  
+For advanced users only.
 
 ---
 
-## ۱) safe_installer.sh  
-نسخه امن — **هیچ دیسکی را حذف یا فرمت نمی‌کند**  
-این نسخه:
+## 1) safe_installer.sh (safe mode)
 
-- CHR را دانلود می‌کند  
-- کارت شبکه را شناسایی می‌کند  
-- IP و روت را تنظیم می‌کند  
-- فایل autorun.scr می‌سازد  
-- همه چیز را آماده نصب می‌کند  
-- ولی **عملیات خطرناک dd را انجام نمی‌دهد**
+This script:
 
-### اجرای نسخه امن:
+- Downloads CHR
+- Detects network interface
+- Configures IP & gateway
+- Creates autorun.scr
+- Prepares installation  
+- Does *not* run `dd` (no disk wipe)
+
+**Run:**
 ```bash
+wget https://github.com/legendary1205/mikrotik-chr-install/main/safe_installer.sh 
 chmod +x safe_installer.sh
 sudo ./safe_installer.sh
