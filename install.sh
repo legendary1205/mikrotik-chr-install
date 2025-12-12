@@ -11,6 +11,51 @@ WHITE='\033[1;37m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 
+# تشخیص نوع سیستم
+detect_system() {
+    if [ -f /etc/debian_version ]; then
+        PKG_MANAGER="apt"
+        PKG_UPDATE="apt update -y"
+        PKG_INSTALL="apt install -y"
+    elif [ -f /etc/redhat-release ]; then
+        PKG_MANAGER="yum"
+        PKG_UPDATE="yum update -y"
+        PKG_INSTALL="yum install -y"
+    elif command -v apk &> /dev/null; then
+        PKG_MANAGER="apk"
+        PKG_UPDATE="apk update"
+        PKG_INSTALL="apk add"
+    else
+        PKG_MANAGER="apt"
+        PKG_UPDATE="apt update -y"
+        PKG_INSTALL="apt install -y"
+    fi
+}
+
+# نصب ابزارهای مورد نیاز
+install_tools() {
+    detect_system
+    
+    echo -e "${CYAN}┌─ Installing required packages...${NC}"
+    $PKG_UPDATE > /dev/null 2>&1
+    show_progress 1 3 "Updating package list"
+    sleep 0.5
+    
+    # نصب pwgen
+    if ! command -v pwgen &> /dev/null; then
+        $PKG_INSTALL pwgen > /dev/null 2>&1
+    fi
+    show_progress 2 3 "Installing pwgen"
+    sleep 0.5
+    
+    # نصب unzip
+    if ! command -v unzip &> /dev/null; then
+        $PKG_INSTALL unzip > /dev/null 2>&1
+    fi
+    show_progress 3 3 "Installing utilities"
+    echo ""
+}
+
 # نمایش بنر
 show_banner() {
     clear 2>/dev/null || echo -e "\033[2J\033[H"
@@ -18,14 +63,14 @@ show_banner() {
     cat << "EOF"
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                               ║
-║   ███╗   ███╗██╗██╗  ██╗██████╗  ██████╗ ████████╗██╗██╗  ██╗                 ║
-║   ████╗ ████║██║██║ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝██║██║ ██╔╝                 ║
-║   ██╔████╔██║██║█████╔╝ ██████╔╝██║   ██║   ██║   ██║█████╔╝                  ║
-║   ██║╚██╔╝██║██║██╔═██╗ ██╔══██╗██║   ██║   ██║   ██║██╔═██╗                  ║
-║   ██║ ╚═╝ ██║██║██║  ██╗██║  ██║╚██████╔╝   ██║   ██║██║  ██╗                 ║
-║   ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝╚═╝  ╚═╝                 ║
+║   ███╗   ███╗██╗██╗  ██╗██████╗  ██████╗ ████████╗██╗██╗  ██╗               ║
+║   ████╗ ████║██║██║ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝██║██║ ██╔╝               ║
+║   ██╔████╔██║██║█████╔╝ ██████╔╝██║   ██║   ██║   ██║█████╔╝                ║
+║   ██║╚██╔╝██║██║██╔═██╗ ██╔══██╗██║   ██║   ██║   ██║██╔═██╗                ║
+║   ██║ ╚═╝ ██║██║██║  ██╗██║  ██║╚██████╔╝   ██║   ██║██║  ██╗               ║
+║   ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝╚═╝  ╚═╝               ║
 ║                                                                               ║
-║                    🚀 RAPIDOSERVER CHR INSTALLER 🚀                           ║
+║                    🚀 RAPIDOSERVER CHR INSTALLER 🚀                          ║
 ║                            Fast & Reliable                                    ║
 ║                website: https://rapidoserver.com/                             ║
 ║               telegram: https://t.me/Rapidoserver                             ║
@@ -53,7 +98,7 @@ show_menu() {
     echo -e "${WHITE}────────────────────────────────────────${NC}"
 }
 
-# Progress bar ساده‌تر
+# Progress bar
 show_progress() {
     local current=$1
     local total=$2
@@ -81,7 +126,7 @@ show_step() {
     echo -e "${MAGENTA}╚════════════════════════════════════════╝${NC}"
 }
 
-# تابع نصب با نمایش مراحل
+# تابع نصب با تشخیص خودکار
 install_mikrotik() {
     local interface=$1
     local disk=$2
@@ -106,16 +151,7 @@ install_mikrotik() {
     
     # مرحله 2: نصب ابزارها
     show_step 2 $total_steps "Installing Dependencies" "📦"
-    echo -e "${CYAN}┌─ Installing required packages...${NC}"
-    apt update > /dev/null 2>&1
-    show_progress 1 3 "Updating package list"
-    sleep 0.5
-    apt install -y pwgen > /dev/null 2>&1
-    show_progress 2 3 "Installing pwgen"
-    sleep 0.5
-    apt install -y coreutils unzip > /dev/null 2>&1
-    show_progress 3 3 "Installing utilities"
-    echo ""
+    install_tools
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} All dependencies installed"
     echo -e "${CYAN}└─${NC}"
     sleep 1
@@ -128,23 +164,53 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 4: استخراج فایل
+    # مرحله 4: استخراج فایل (با تشخیص خودکار)
     show_step 4 $total_steps "Extracting Image" "📂"
     echo -e "${CYAN}┌─ Extracting CHR image...${NC}"
-    gunzip -c chr.img.zip > chr.img 2>/dev/null
+    
+    # تشخیص نوع فایل
+    if file chr.img.zip | grep -q "gzip"; then
+        gunzip -c chr.img.zip > chr.img 2>/dev/null
+    elif file chr.img.zip | grep -q "Zip"; then
+        unzip -p chr.img.zip > chr.img 2>/dev/null
+    else
+        # fallback: سعی در هر دو روش
+        gunzip -c chr.img.zip > chr.img 2>/dev/null || unzip -p chr.img.zip > chr.img 2>/dev/null
+    fi
+    
     show_progress 100 100 "Extraction complete"
     echo ""
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Image extracted successfully"
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 5: نصب فایل سیستم
+    # مرحله 5: تشخیص خودکار mount point
     show_step 5 $total_steps "Mounting Filesystem" "💾"
-    echo -e "${CYAN}┌─ Mounting CHR image...${NC}"
-    mount -o loop,offset=33571840 chr.img /mnt 2>/dev/null
+    echo -e "${CYAN}┌─ Detecting mount structure...${NC}"
+    
+    # ایجاد mount point موقت
+    MOUNT_POINT="/tmp/chr_mount_$$"
+    mkdir -p "$MOUNT_POINT" 2>/dev/null
+    
+    # تلاش برای mount با offsetهای مختلف
+    MOUNTED=false
+    for offset in 33571840 16777216 512 1048576; do
+        if mount -o loop,offset=$offset chr.img "$MOUNT_POINT" 2>/dev/null; then
+            echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Mounted with offset: ${WHITE}$offset${NC}"
+            MOUNTED=true
+            break
+        fi
+    done
+    
+    if [ "$MOUNTED" = false ]; then
+        echo -e "${CYAN}│${NC}  ${RED}✗${NC} Failed to mount image"
+        echo -e "${CYAN}└─${NC}"
+        return 1
+    fi
+    
     show_progress 100 100 "Mount complete"
     echo ""
-    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Filesystem mounted at /mnt"
+    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Filesystem mounted at ${WHITE}$MOUNT_POINT${NC}"
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
@@ -163,27 +229,49 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 2
     
-    # مرحله 7: پیکربندی خودکار
+    # مرحله 7: پیکربندی خودکار (با تشخیص مسیر)
     show_step 7 $total_steps "Creating AutoRun Script" "⚙️"
     echo -e "${CYAN}┌─ Writing configuration...${NC}"
-    echo "/ip address add address=$ADDRESS interface=[/interface ethernet find where name=ether1]" > /mnt/rw/autorun.scr
+    
+    # تشخیص خودکار مسیر autorun.scr
+    AUTORUN_PATH=""
+    for path in "$MOUNT_POINT/rw/autorun.scr" "$MOUNT_POINT/autorun.scr" "$MOUNT_POINT/boot/autorun.scr"; do
+        dir=$(dirname "$path")
+        if [ -d "$dir" ] && [ -w "$dir" ]; then
+            AUTORUN_PATH="$path"
+            break
+        fi
+    done
+    
+    # اگر هیچ مسیری پیدا نشد، ایجاد دایرکتوری
+    if [ -z "$AUTORUN_PATH" ]; then
+        mkdir -p "$MOUNT_POINT/rw" 2>/dev/null
+        AUTORUN_PATH="$MOUNT_POINT/rw/autorun.scr"
+    fi
+    
+    # نوشتن اسکریپت
+    echo "/ip address add address=$ADDRESS interface=[/interface ethernet find where name=ether1]" > "$AUTORUN_PATH" 2>/dev/null
     show_progress 20 100 "Network settings"
     sleep 0.3
-    echo "/ip route add gateway=$GATEWAY" >> /mnt/rw/autorun.scr
+    echo "/ip route add gateway=$GATEWAY" >> "$AUTORUN_PATH" 2>/dev/null
     show_progress 40 100 "Gateway configuration"
     sleep 0.3
-    echo "/ip service disable telnet" >> /mnt/rw/autorun.scr
+    echo "/ip service disable telnet" >> "$AUTORUN_PATH" 2>/dev/null
     show_progress 60 100 "Security settings"
     sleep 0.3
-    echo "/user set 0 name=admin password=$PASSWORD" >> /mnt/rw/autorun.scr
+    echo "/user set 0 name=admin password=$PASSWORD" >> "$AUTORUN_PATH" 2>/dev/null
     show_progress 80 100 "User credentials"
     sleep 0.3
-    echo "/ip dns set server=8.8.8.8,1.1.1.1" >> /mnt/rw/autorun.scr
+    echo "/ip dns set server=8.8.8.8,1.1.1.1" >> "$AUTORUN_PATH" 2>/dev/null
     show_progress 100 100 "DNS configuration"
     echo ""
-    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} AutoRun script created"
+    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} AutoRun script created at ${WHITE}$AUTORUN_PATH${NC}"
     echo -e "${CYAN}└─${NC}"
     sleep 1
+    
+    # Unmount قبل از نوشتن
+    umount "$MOUNT_POINT" 2>/dev/null
+    rmdir "$MOUNT_POINT" 2>/dev/null
     
     # مرحله 8: نوشتن بر روی دیسک
     show_step 8 $total_steps "Writing to Disk" "💿"
@@ -208,7 +296,7 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # نمایش اطلاعات نهایی (بدون clear)
+    # نمایش اطلاعات نهایی
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                  ✅ INSTALLATION COMPLETED!                    ║${NC}"
