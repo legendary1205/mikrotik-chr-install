@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 Rapido MikroTik Installer
+# 🚀 Rapido Server MikroTik Installer
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![MikroTik](https://img.shields.io/badge/MikroTik-CHR-red.svg)](https://mikrotik.com)
@@ -34,7 +34,7 @@
 
 Install with a single command:
 ```bash
-wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
+wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
 ```
 ## 📋 Requirements
 
@@ -46,17 +46,10 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 ## 📦 Installation Methods
 
 ### Method 1: Direct Install (Recommended)
-
-```bash
-wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-```
-### Method 2: Manual Download with wget
-
-Download & install the script:
 ```bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
 ```
-### Method 3: Using curl
+### Method 2: Using curl
 
 Download:
 ```bash
@@ -228,9 +221,8 @@ If you find this project helpful, consider:
 - 🔀 Contributing code
 
 ## 📞 Support & Contact
-
-- **Issues**: [GitHub Issues](https://github.com/legendary1205/mikrotik-chr-install/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/legendary1205/mikrotik-chr-install/discussions)
+https://rapidoserver.com
+telegram : @Rapidoserver
 
 ## 🙏 Acknowledgments
 

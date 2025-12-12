@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 نصب‌کننده خودکار میکروتیک راپیدو
+# 🚀 نصب‌کننده خودکار میکروتیک راپیدو سرور
 
 [![مجوز](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![میکروتیک](https://img.shields.io/badge/MikroTik-CHR-red.svg)](https://mikrotik.com)
@@ -34,7 +34,7 @@
 
 نصب با یک دستور:
 ```bash
-wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
+wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
 ```
 ## 📋 پیش‌نیازها
 
@@ -46,17 +46,10 @@ wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/m
 ## 📦 روش‌های نصب
 
 ### روش 1: نصب مستقیم (پیشنهادی)
-
-```bash
-wget -O - https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh | sudo bash
-```
-### روش 2: دانلود دستی با wget
-
-  دانلود اسکریپت و نصب:
 ```bash
 wget https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
 ```
-### روش 3: استفاده از curl
+### روش 2: استفاده از curl
 
 ‍‍‍‍‍```bash
 curl -O https://raw.githubusercontent.com/legendary1205/mikrotik-chr-install/main/install.sh && chmod +x install.sh && sudo ./install.sh
@@ -227,10 +220,8 @@ sudo ./install.sh
 - 🔀 کد مشارکت کنید
 
 ## 📞 پشتیبانی و تماس
-
-- **مشکلات**: [GitHub Issues](https://github.com/legendary1205/mikrotik-chr-install/issues)
-- **بحث‌ها**: [GitHub Discussions](https://github.com/legendary1205/mikrotik-chr-install/discussions)
-
+https://rapidoserver.com/
+telegram : @Rapidoserver
 ## 🙏 قدردانی
 
 - میکروتیک برای تصاویر CHR
