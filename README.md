@@ -7,7 +7,7 @@
 [![Bash](https://img.shields.io/badge/Bash-4.0%2B-orange.svg)](https://www.gnu.org/software/bash/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/legendary1205/mikrotik-chr-install)
 
-### Automated MikroTik CHR Installation Script for Ubuntu/Debian
+### Automated MikroTik CHR Installation Script for Ubuntu/Debian/almalinux/rocky/oracle/suse
 
 [🇺🇸 English](README.md) | [🇮🇷 فارسی](README.fa.md)
 
