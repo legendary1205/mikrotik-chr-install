@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# رنگ‌ها
+
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -11,7 +11,7 @@ WHITE='\033[1;37m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 
-# تشخیص نوع سیستم
+
 detect_system() {
     if [ -f /etc/debian_version ]; then
         PKG_MANAGER="apt"
@@ -32,7 +32,7 @@ detect_system() {
     fi
 }
 
-# نصب ابزارهای مورد نیاز
+
 install_tools() {
     detect_system
     
@@ -41,14 +41,14 @@ install_tools() {
     show_progress 1 3 "Updating package list"
     sleep 0.5
     
-    # نصب pwgen
+  
     if ! command -v pwgen &> /dev/null; then
         $PKG_INSTALL pwgen > /dev/null 2>&1
     fi
     show_progress 2 3 "Installing pwgen"
     sleep 0.5
     
-    # نصب unzip
+
     if ! command -v unzip &> /dev/null; then
         $PKG_INSTALL unzip > /dev/null 2>&1
     fi
@@ -56,7 +56,7 @@ install_tools() {
     echo ""
 }
 
-# نمایش بنر
+
 show_banner() {
     clear 2>/dev/null || echo -e "\033[2J\033[H"
     echo -e "${CYAN}"
@@ -79,7 +79,7 @@ EOF
     echo -e "${NC}"
 }
 
-# نمایش منوی اصلی
+
 show_menu() {
     echo ""
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
@@ -98,7 +98,7 @@ show_menu() {
     echo -e "${WHITE}────────────────────────────────────────${NC}"
 }
 
-# Progress bar
+
 show_progress() {
     local current=$1
     local total=$2
@@ -113,7 +113,7 @@ show_progress() {
     printf "] %3d%% │" "$percent"
 }
 
-# نمایش مرحله
+
 show_step() {
     local step=$1
     local total=$2
@@ -126,7 +126,7 @@ show_step() {
     echo -e "${MAGENTA}╚════════════════════════════════════════╝${NC}"
 }
 
-# تابع نصب با تشخیص خودکار
+
 install_mikrotik() {
     local interface=$1
     local disk=$2
@@ -139,7 +139,7 @@ install_mikrotik() {
     echo -e "${GREEN}║     🚀 INSTALLATION IN PROGRESS        ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     
-    # مرحله 1: دریافت اطلاعات شبکه
+
     show_step 1 $total_steps "Network Configuration" "🌐"
     echo -e "${CYAN}┌─ Detecting network settings...${NC}"
     ADDRESS=`ip addr show $interface | grep global | cut -d' ' -f 6 | head -n 1`
@@ -149,14 +149,14 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 2: نصب ابزارها
+  
     show_step 2 $total_steps "Installing Dependencies" "📦"
     install_tools
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} All dependencies installed"
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 3: دانلود CHR
+ 
     show_step 3 $total_steps "Downloading MikroTik CHR" "⬇️"
     echo -e "${CYAN}┌─ Downloading version ${WHITE}$version${NC}..."
     wget -q https://download.mikrotik.com/routeros/$version/chr-$version.img.zip -O chr.img.zip
@@ -164,17 +164,17 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 4: استخراج فایل (با تشخیص خودکار)
+   
     show_step 4 $total_steps "Extracting Image" "📂"
     echo -e "${CYAN}┌─ Extracting CHR image...${NC}"
     
-    # تشخیص نوع فایل
+  
     if file chr.img.zip | grep -q "gzip"; then
         gunzip -c chr.img.zip > chr.img 2>/dev/null
     elif file chr.img.zip | grep -q "Zip"; then
         unzip -p chr.img.zip > chr.img 2>/dev/null
     else
-        # fallback: سعی در هر دو روش
+     
         gunzip -c chr.img.zip > chr.img 2>/dev/null || unzip -p chr.img.zip > chr.img 2>/dev/null
     fi
     
@@ -184,15 +184,15 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 5: تشخیص خودکار mount point
+  
     show_step 5 $total_steps "Mounting Filesystem" "💾"
     echo -e "${CYAN}┌─ Detecting mount structure...${NC}"
     
-    # ایجاد mount point موقت
+    
     MOUNT_POINT="/tmp/chr_mount_$$"
     mkdir -p "$MOUNT_POINT" 2>/dev/null
     
-    # تلاش برای mount با offsetهای مختلف
+ 
     MOUNTED=false
     for offset in 33571840 16777216 512 1048576; do
         if mount -o loop,offset=$offset chr.img "$MOUNT_POINT" 2>/dev/null; then
@@ -214,7 +214,7 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 6: تولید رمز عبور
+    
     show_step 6 $total_steps "Generating Credentials" "🔐"
     echo -e "${CYAN}┌─ Creating secure password...${NC}"
     PASSWORD=$(pwgen 12 1)
@@ -229,11 +229,11 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 2
     
-    # مرحله 7: پیکربندی خودکار (با تشخیص مسیر)
+  
     show_step 7 $total_steps "Creating AutoRun Script" "⚙️"
     echo -e "${CYAN}┌─ Writing configuration...${NC}"
     
-    # تشخیص خودکار مسیر autorun.scr
+
     AUTORUN_PATH=""
     for path in "$MOUNT_POINT/rw/autorun.scr" "$MOUNT_POINT/autorun.scr" "$MOUNT_POINT/boot/autorun.scr"; do
         dir=$(dirname "$path")
@@ -243,13 +243,13 @@ install_mikrotik() {
         fi
     done
     
-    # اگر هیچ مسیری پیدا نشد، ایجاد دایرکتوری
+
     if [ -z "$AUTORUN_PATH" ]; then
         mkdir -p "$MOUNT_POINT/rw" 2>/dev/null
         AUTORUN_PATH="$MOUNT_POINT/rw/autorun.scr"
     fi
     
-    # نوشتن اسکریپت
+
     echo "/ip address add address=$ADDRESS interface=[/interface ethernet find where name=ether1]" > "$AUTORUN_PATH" 2>/dev/null
     show_progress 20 100 "Network settings"
     sleep 0.3
@@ -269,11 +269,11 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # Unmount قبل از نوشتن
+  
     umount "$MOUNT_POINT" 2>/dev/null
     rmdir "$MOUNT_POINT" 2>/dev/null
     
-    # مرحله 8: نوشتن بر روی دیسک
+ 
     show_step 8 $total_steps "Writing to Disk" "💿"
     echo -e "${CYAN}┌─ Preparing disk...${NC}"
     echo u > /proc/sysrq-trigger 2>/dev/null
@@ -286,7 +286,7 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # مرحله 9: Sync و Reboot
+  
     show_step 9 $total_steps "Finalizing Installation" "✅"
     echo -e "${CYAN}┌─ Syncing disk...${NC}"
     echo s > /proc/sysrq-trigger 2>/dev/null
@@ -296,7 +296,7 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # نمایش اطلاعات نهایی
+   
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                  ✅ INSTALLATION COMPLETED!                    ║${NC}"
@@ -326,7 +326,7 @@ install_mikrotik() {
     echo b > /proc/sysrq-trigger
 }
 
-# نصب خودکار
+
 automatic_install() {
     show_banner
     echo -e "${WHITE}╔═════════════════════════════════════════╗${NC}"
@@ -334,7 +334,7 @@ automatic_install() {
     echo -e "${WHITE}╚═════════════════════════════════════════╝${NC}"
     echo ""
     
-    # انتخاب کارت شبکه
+  
     echo -e "${CYAN}┌─ Network Interfaces${NC}"
     echo -e "${CYAN}│${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo | while read iface; do
@@ -354,7 +354,7 @@ automatic_install() {
         return
     fi
     
-    # انتخاب دیسک
+   
     echo ""
     echo -e "${CYAN}┌─ Available Disks${NC}"
     echo -e "${CYAN}│${NC}"
@@ -375,7 +375,7 @@ automatic_install() {
         return
     fi
     
-    # تایید نهایی
+
     echo ""
     echo -e "${MAGENTA}╔════════════════════════════════════════╗${NC}"
     echo -e "${MAGENTA}║         📋 INSTALLATION SUMMARY        ║${NC}"
@@ -401,7 +401,7 @@ automatic_install() {
     fi
 }
 
-# نصب سفارشی
+
 custom_install() {
     show_banner
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
@@ -409,7 +409,7 @@ custom_install() {
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     
-    # انتخاب کارت شبکه
+   
     echo -e "${CYAN}┌─ Network Interfaces${NC}"
     echo -e "${CYAN}│${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo | while read iface; do
@@ -429,7 +429,7 @@ custom_install() {
         return
     fi
     
-    # انتخاب دیسک
+   
     echo ""
     echo -e "${CYAN}┌─ Available Disks${NC}"
     echo -e "${CYAN}│${NC}"
@@ -450,7 +450,7 @@ custom_install() {
         return
     fi
     
-    # انتخاب نسخه
+  
     echo ""
     echo -e "${CYAN}┌─ Recommended Versions${NC}"
     echo -e "${CYAN}│${NC}"
@@ -471,7 +471,7 @@ custom_install() {
         return
     fi
     
-    # تایید نهایی
+   
     echo ""
     echo -e "${MAGENTA}╔════════════════════════════════════════╗${NC}"
     echo -e "${MAGENTA}║         📋 INSTALLATION SUMMARY        ║${NC}"
@@ -497,7 +497,7 @@ custom_install() {
     fi
 }
 
-# حلقه اصلی
+
 while true; do
     show_banner
     show_menu
