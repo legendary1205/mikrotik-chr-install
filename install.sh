@@ -63,14 +63,14 @@ show_banner() {
     cat << "EOF"
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                               ║
-║   ███╗   ███╗██╗██╗  ██╗██████╗  ██████╗ ████████╗██╗██╗  ██╗               ║
-║   ████╗ ████║██║██║ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝██║██║ ██╔╝               ║
-║   ██╔████╔██║██║█████╔╝ ██████╔╝██║   ██║   ██║   ██║█████╔╝                ║
-║   ██║╚██╔╝██║██║██╔═██╗ ██╔══██╗██║   ██║   ██║   ██║██╔═██╗                ║
-║   ██║ ╚═╝ ██║██║██║  ██╗██║  ██║╚██████╔╝   ██║   ██║██║  ██╗               ║
-║   ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝╚═╝  ╚═╝               ║
+║   ███╗   ███╗██╗██╗  ██╗██████╗  ██████╗ ████████╗██╗██╗  ██╗                 ║
+║   ████╗ ████║██║██║ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝██║██║ ██╔╝                 ║
+║   ██╔████╔██║██║█████╔╝ ██████╔╝██║   ██║   ██║   ██║█████╔╝                  ║
+║   ██║╚██╔╝██║██║██╔═██╗ ██╔══██╗██║   ██║   ██║   ██║██╔═██╗                  ║
+║   ██║ ╚═╝ ██║██║██║  ██╗██║  ██║╚██████╔╝   ██║   ██║██║  ██╗                 ║
+║   ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝╚═╝  ╚═╝                 ║
 ║                                                                               ║
-║                    🚀 RAPIDOSERVER CHR INSTALLER 🚀                          ║
+║                    🚀 RAPIDOSERVER CHR INSTALLER 🚀                           ║
 ║                            Fast & Reliable                                    ║
 ║                website: https://rapidoserver.com/                             ║
 ║               telegram: https://t.me/Rapidoserver                             ║
@@ -83,7 +83,7 @@ EOF
 show_menu() {
     echo ""
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║          ${GREEN}📋 MAIN MENU${WHITE}                 ║${NC}"
+    echo -e "${WHITE}║          ${GREEN}📋 MAIN MENU${WHITE}  ║${NC}"
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "  ${CYAN}[${WHITE}1${CYAN}]${NC} ${GREEN}⚡ Automatic Installation${NC}"
@@ -136,7 +136,7 @@ install_mikrotik() {
     clear 2>/dev/null || echo -e "\033[2J\033[H"
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║     🚀 INSTALLATION IN PROGRESS       ║${NC}"
+    echo -e "${GREEN}║     🚀 INSTALLATION IN PROGRESS        ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     
     # مرحله 1: دریافت اطلاعات شبکه
@@ -329,9 +329,9 @@ install_mikrotik() {
 # نصب خودکار
 automatic_install() {
     show_banner
-    echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║    ${GREEN}⚡ AUTOMATIC INSTALLATION${WHITE}        ║${NC}"
-    echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
+    echo -e "${WHITE}╔═════════════════════════════════════════╗${NC}"
+    echo -e "${WHITE}║${GREEN}⚡ AUTOMATIC INSTALLATION${WHITE}║${NC}"
+    echo -e "${WHITE}╚═════════════════════════════════════════╝${NC}"
     echo ""
     
     # انتخاب کارت شبکه
@@ -405,7 +405,7 @@ automatic_install() {
 custom_install() {
     show_banner
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║     ${YELLOW}🔧 CUSTOM INSTALLATION${WHITE}          ║${NC}"
+    echo -e "${WHITE}║${YELLOW}🔧 CUSTOM INSTALLATION${WHITE} ║${NC}"
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     
@@ -514,7 +514,7 @@ while true; do
         3)
             show_banner
             echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-            echo -e "${GREEN}║   Thank you for using Rapido CHR!     ║${NC}"
+            echo -e "${GREEN}║   Thank you for using Rapido CHR!      ║${NC}"
             echo -e "${GREEN}║          👋 Goodbye! 👋                ║${NC}"
             echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
             echo ""
