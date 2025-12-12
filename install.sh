@@ -5,7 +5,7 @@ CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 # Function to display banner
 show_banner() {
@@ -127,7 +127,8 @@ automatic_install() {
     echo -e "${CYAN}Available network interfaces:${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
     echo ""
-    read -p "$(echo -e ${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC})" interface
+    echo -e -n "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
+    read interface
     
     if [ -z "$interface" ]; then
         echo -e "${RED}Error: Interface name cannot be empty!${NC}"
@@ -140,7 +141,8 @@ automatic_install() {
     echo -e "${CYAN}Available disks:${NC}"
     lsblk -d -n -o NAME,SIZE | grep -v loop
     echo ""
-    read -p "$(echo -e ${YELLOW}Enter disk name [e.g., vda, sda]: ${NC})" disk
+    echo -e -n "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    read disk
     
     if [ -z "$disk" ]; then
         echo -e "${RED}Error: Disk name cannot be empty!${NC}"
@@ -158,7 +160,8 @@ automatic_install() {
     echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
     echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
     echo ""
-    read -p "$(echo -e ${YELLOW}Continue? [yes/no]: ${NC})" confirm
+    echo -e -n "${YELLOW}Continue? [yes/no]: ${NC}"
+    read confirm
     
     if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ]; then
         install_mikrotik "$interface" "$disk" "7.19.3"
@@ -178,7 +181,8 @@ custom_install() {
     echo -e "${CYAN}Available network interfaces:${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
     echo ""
-    read -p "$(echo -e ${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC})" interface
+    echo -e -n "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
+    read interface
     
     if [ -z "$interface" ]; then
         echo -e "${RED}Error: Interface name cannot be empty!${NC}"
@@ -191,7 +195,8 @@ custom_install() {
     echo -e "${CYAN}Available disks:${NC}"
     lsblk -d -n -o NAME,SIZE | grep -v loop
     echo ""
-    read -p "$(echo -e ${YELLOW}Enter disk name [e.g., vda, sda]: ${NC})" disk
+    echo -e -n "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    read disk
     
     if [ -z "$disk" ]; then
         echo -e "${RED}Error: Disk name cannot be empty!${NC}"
@@ -201,7 +206,8 @@ custom_install() {
     
     # Get MikroTik version
     echo ""
-    read -p "$(echo -e ${YELLOW}Enter MikroTik version [e.g., 7.19.3, 7.18]: ${NC})" version
+    echo -e -n "${YELLOW}Enter MikroTik version [e.g., 7.19.3, 7.18]: ${NC}"
+    read version
     
     if [ -z "$version" ]; then
         echo -e "${RED}Error: Version cannot be empty!${NC}"
@@ -219,7 +225,8 @@ custom_install() {
     echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
     echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
     echo ""
-    read -p "$(echo -e ${YELLOW}Continue? [yes/no]: ${NC})" confirm
+    echo -e -n "${YELLOW}Continue? [yes/no]: ${NC}"
+    read confirm
     
     if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ]; then
         install_mikrotik "$interface" "$disk" "$version"
@@ -234,8 +241,8 @@ while true; do
     show_banner
     show_menu
     
-    # Read user choice (WITHOUT -n 1 flag)
-    read -p "$(echo -e ${YELLOW}Enter your choice [1-3]: ${NC})" choice
+    echo -e -n "${YELLOW}Enter your choice [1-3]: ${NC}"
+    read choice
     
     case $choice in
         1)
