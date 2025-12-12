@@ -127,13 +127,19 @@ After successful installation, you'll receive:
 
 
 ═══════════════════════════════════════════
+
 Installation Complete!
+
 ═══════════════════════════════════════════
+
 Username: admin
 Password: AbCd1234XyZ#
+
 ═══════════════════════════════════════════
+
 ⚠️  SAVE THIS PASSWORD NOW!
 Server will reboot in 10 seconds...
+
 ═══════════════════════════════════════════
 
 ### Accessing Your Router
