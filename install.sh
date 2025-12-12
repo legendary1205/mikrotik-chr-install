@@ -13,7 +13,7 @@ NC='\033[0m'
 
 # نمایش بنر
 show_banner() {
-    clear
+    clear 2>/dev/null || echo -e "\033[2J\033[H"
     echo -e "${CYAN}"
     cat << "EOF"
 ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -27,9 +27,8 @@ show_banner() {
 ║                                                                               ║
 ║                    🚀 RAPIDOSERVER CHR INSTALLER 🚀                           ║
 ║                            Fast & Reliable                                    ║
-║                website: https://rapidoserver.com/                             ║ 
-║               telegram: https://t.me/Rapidoserver                             ║ 
-║                                                                               ║
+║                website: https://rapidoserver.com/                             ║
+║               telegram: https://t.me/Rapidoserver                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 EOF
     echo -e "${NC}"
@@ -39,7 +38,7 @@ EOF
 show_menu() {
     echo ""
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║    ${GREEN}📋 MAIN MENU${WHITE}        ║${NC}"
+    echo -e "${WHITE}║          ${GREEN}📋 MAIN MENU${WHITE}                 ║${NC}"
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "  ${CYAN}[${WHITE}1${CYAN}]${NC} ${GREEN}⚡ Automatic Installation${NC}"
@@ -54,7 +53,7 @@ show_menu() {
     echo -e "${WHITE}────────────────────────────────────────${NC}"
 }
 
-# Progress bar
+# Progress bar ساده‌تر
 show_progress() {
     local current=$1
     local total=$2
@@ -63,12 +62,10 @@ show_progress() {
     local filled=$((percent / 2))
     local empty=$((50 - filled))
     
-    echo -e -n "\r${CYAN}│${NC} "
-    printf "%-40s" "$text"
-    echo -n " ["
+    printf "\r│ %-40s [" "$text"
     printf "%${filled}s" | tr ' ' '█'
     printf "%${empty}s" | tr ' ' '░'
-    echo -n "] ${WHITE}${percent}%${NC} ${CYAN}│${NC}"
+    printf "] %3d%% │" "$percent"
 }
 
 # نمایش مرحله
@@ -91,7 +88,7 @@ install_mikrotik() {
     local version=$3
     local total_steps=9
     
-    clear
+    clear 2>/dev/null || echo -e "\033[2J\033[H"
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║     🚀 INSTALLATION IN PROGRESS       ║${NC}"
@@ -111,9 +108,11 @@ install_mikrotik() {
     show_step 2 $total_steps "Installing Dependencies" "📦"
     echo -e "${CYAN}┌─ Installing required packages...${NC}"
     apt update > /dev/null 2>&1
-    show_progress 1 3 "Updating package list" && sleep 0.5
+    show_progress 1 3 "Updating package list"
+    sleep 0.5
     apt install -y pwgen > /dev/null 2>&1
-    show_progress 2 3 "Installing pwgen" && sleep 0.5
+    show_progress 2 3 "Installing pwgen"
+    sleep 0.5
     apt install -y coreutils unzip > /dev/null 2>&1
     show_progress 3 3 "Installing utilities"
     echo ""
@@ -124,9 +123,7 @@ install_mikrotik() {
     # مرحله 3: دانلود CHR
     show_step 3 $total_steps "Downloading MikroTik CHR" "⬇️"
     echo -e "${CYAN}┌─ Downloading version ${WHITE}$version${NC}..."
-    echo -e "${CYAN}│${NC}"
-    wget -q --show-progress https://download.mikrotik.com/routeros/$version/chr-$version.img.zip -O chr.img.zip 2>&1 | grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\r'${CYAN}'│'${NC}'  '${GREEN}'⬇'${NC}' Downloading... '${WHITE}'%s'${NC}' '${CYAN}'│'${NC}'"), $2+0}'
-    echo ""
+    wget -q https://download.mikrotik.com/routeros/$version/chr-$version.img.zip -O chr.img.zip
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Download completed"
     echo -e "${CYAN}└─${NC}"
     sleep 1
@@ -134,14 +131,7 @@ install_mikrotik() {
     # مرحله 4: استخراج فایل
     show_step 4 $total_steps "Extracting Image" "📂"
     echo -e "${CYAN}┌─ Extracting CHR image...${NC}"
-    gunzip -c chr.img.zip > chr.img 2>/dev/null &
-    pid=$!
-    local i=0
-    while kill -0 $pid 2>/dev/null; do
-        show_progress $((i % 100 + 1)) 100 "Extracting image"
-        sleep 0.1
-        ((i++))
-    done
+    gunzip -c chr.img.zip > chr.img 2>/dev/null
     show_progress 100 100 "Extraction complete"
     echo ""
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Image extracted successfully"
@@ -200,12 +190,10 @@ install_mikrotik() {
     echo -e "${CYAN}┌─ Preparing disk...${NC}"
     echo u > /proc/sysrq-trigger 2>/dev/null
     show_progress 25 100 "Unmounting filesystems"
-    sleep 0.5
-    echo -e "${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC}  ${YELLOW}⚡ Writing image to /dev/$disk...${NC}"
-    echo -e "${CYAN}│${NC}"
-    dd if=chr.img bs=1M of=/dev/$disk status=progress 2>&1 | grep --line-buffered -oP '\d+(?= bytes)' | awk '{printf("\r'${CYAN}'│'${NC}'  '${GREEN}'▶'${NC}' Writing... '${WHITE}'%d MB'${NC}' '${CYAN}'│'${NC}'"), $1/1048576}'
     echo ""
+    sleep 0.5
+    echo -e "${CYAN}│${NC}  ${YELLOW}⚡ Writing image to /dev/$disk...${NC}"
+    dd if=chr.img bs=1M of=/dev/$disk 2>/dev/null
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} Image written successfully"
     echo -e "${CYAN}└─${NC}"
     sleep 1
@@ -220,9 +208,8 @@ install_mikrotik() {
     echo -e "${CYAN}└─${NC}"
     sleep 1
     
-    # نمایش اطلاعات نهایی
-    clear
-    show_banner
+    # نمایش اطلاعات نهایی (بدون clear)
+    echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                  ✅ INSTALLATION COMPLETED!                    ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════════════════════════════╝${NC}"
@@ -244,9 +231,10 @@ install_mikrotik() {
     echo -e "${BLUE}System will reboot automatically...${NC}"
     echo ""
     
-    read -t 10 -u 1
+    read -t 10 -u 1 2>/dev/null || sleep 10
     echo ""
     echo -e "${GREEN}🔄 Rebooting now...${NC}"
+    sleep 2
     echo b > /proc/sysrq-trigger
 }
 
@@ -254,7 +242,7 @@ install_mikrotik() {
 automatic_install() {
     show_banner
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║${GREEN}⚡ AUTOMATIC INSTALLATION${WHITE} ║${NC}"
+    echo -e "${WHITE}║    ${GREEN}⚡ AUTOMATIC INSTALLATION${WHITE}        ║${NC}"
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     
@@ -329,7 +317,7 @@ automatic_install() {
 custom_install() {
     show_banner
     echo -e "${WHITE}╔════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║${YELLOW}🔧 CUSTOM INSTALLATION${WHITE} ║${NC}"
+    echo -e "${WHITE}║     ${YELLOW}🔧 CUSTOM INSTALLATION${WHITE}          ║${NC}"
     echo -e "${WHITE}╚════════════════════════════════════════╝${NC}"
     echo ""
     
@@ -378,8 +366,8 @@ custom_install() {
     echo ""
     echo -e "${CYAN}┌─ Recommended Versions${NC}"
     echo -e "${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} 7.19.3 ${BLUE}(Latest Stable)${NC}"
-    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} 7.16.1"
+    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} 7.16.1 ${BLUE}(Latest Stable)${NC}"
+    echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} 7.15.3"
     echo -e "${CYAN}│${NC}  ${GREEN}✓${NC} 7.14.3"
     echo -e "${CYAN}└─${NC}"
     echo ""
@@ -438,7 +426,7 @@ while true; do
         3)
             show_banner
             echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-            echo -e "${GREEN}║ Thank you for using Rapido Server CHR! ║${NC}"
+            echo -e "${GREEN}║   Thank you for using Rapido CHR!     ║${NC}"
             echo -e "${GREEN}║          👋 Goodbye! 👋                ║${NC}"
             echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
             echo ""
