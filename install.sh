@@ -44,6 +44,7 @@ install_mikrotik() {
     local disk=$2
     local version=$3
     
+    echo ""
     echo -e "${YELLOW}Starting installation...${NC}"
     
     # Update and install required packages
@@ -127,12 +128,14 @@ automatic_install() {
     echo -e "${CYAN}Available network interfaces:${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
     echo ""
-    echo -e -n "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
+    echo -n "Enter network interface name [e.g., eth0, ens3]: "
     read interface
     
     if [ -z "$interface" ]; then
         echo -e "${RED}Error: Interface name cannot be empty!${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
         return
     fi
     
@@ -141,12 +144,14 @@ automatic_install() {
     echo -e "${CYAN}Available disks:${NC}"
     lsblk -d -n -o NAME,SIZE | grep -v loop
     echo ""
-    echo -e -n "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    echo -n "Enter disk name [e.g., vda, sda]: "
     read disk
     
     if [ -z "$disk" ]; then
         echo -e "${RED}Error: Disk name cannot be empty!${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
         return
     fi
     
@@ -160,14 +165,16 @@ automatic_install() {
     echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
     echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
     echo ""
-    echo -e -n "${YELLOW}Continue? [yes/no]: ${NC}"
+    echo -n "Continue? [yes/no]: "
     read confirm
     
     if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ]; then
         install_mikrotik "$interface" "$disk" "7.19.3"
     else
         echo -e "${RED}Installation cancelled.${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
     fi
 }
 
@@ -181,12 +188,14 @@ custom_install() {
     echo -e "${CYAN}Available network interfaces:${NC}"
     ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
     echo ""
-    echo -e -n "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
+    echo -n "Enter network interface name [e.g., eth0, ens3]: "
     read interface
     
     if [ -z "$interface" ]; then
         echo -e "${RED}Error: Interface name cannot be empty!${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
         return
     fi
     
@@ -195,23 +204,27 @@ custom_install() {
     echo -e "${CYAN}Available disks:${NC}"
     lsblk -d -n -o NAME,SIZE | grep -v loop
     echo ""
-    echo -e -n "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    echo -n "Enter disk name [e.g., vda, sda]: "
     read disk
     
     if [ -z "$disk" ]; then
         echo -e "${RED}Error: Disk name cannot be empty!${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
         return
     fi
     
     # Get MikroTik version
     echo ""
-    echo -e -n "${YELLOW}Enter MikroTik version [e.g., 7.19.3, 7.18]: ${NC}"
+    echo -n "Enter MikroTik version [e.g., 7.19.3, 7.18]: "
     read version
     
     if [ -z "$version" ]; then
         echo -e "${RED}Error: Version cannot be empty!${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
         return
     fi
     
@@ -225,14 +238,16 @@ custom_install() {
     echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
     echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
     echo ""
-    echo -e -n "${YELLOW}Continue? [yes/no]: ${NC}"
+    echo -n "Continue? [yes/no]: "
     read confirm
     
     if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ]; then
         install_mikrotik "$interface" "$disk" "$version"
     else
         echo -e "${RED}Installation cancelled.${NC}"
-        sleep 2
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
     fi
 }
 
@@ -241,7 +256,7 @@ while true; do
     show_banner
     show_menu
     
-    echo -e -n "${YELLOW}Enter your choice [1-3]: ${NC}"
+    echo -n "Enter your choice [1-3]: "
     read choice
     
     case $choice in
@@ -260,7 +275,9 @@ while true; do
             ;;
         *)
             echo -e "${RED}Invalid option. Please enter 1, 2, or 3${NC}"
-            sleep 2
+            echo ""
+            echo -n "Press Enter to continue..."
+            read
             ;;
     esac
 done
