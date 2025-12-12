@@ -228,7 +228,8 @@ If you find this project helpful, consider:
 
 ## 📞 Support & Contact
 https://rapidoserver.com
-telegram : @Rapidoserver
+
+telegram : https://t.me/Rapidoserver
 
 ## 🙏 Acknowledgments
 
