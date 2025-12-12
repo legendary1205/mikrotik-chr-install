@@ -33,250 +33,210 @@ show_menu() {
     echo ""
 }
 
-# Function to generate random password
-generate_password() {
-    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1
-}
-
-# Function to install MikroTik
+# Function to install MikroTik (base script logic)
 install_mikrotik() {
-    local interface=$1
-    local disk=$2
-    local version=$3
+    local INTERFACE=$1
+    local DISK=$2
+    local VERSIONCHR=$3
     
     echo ""
-    echo -e "${YELLOW}Starting installation...${NC}"
+    echo -e "${YELLOW}Starting MikroTik installation...${NC}"
     sleep 1
     
-    # Update and install required packages
+    # Get network configuration using provided interface
+    ADDRESS=$(ip addr show "$INTERFACE" | grep global | cut -d' ' -f 6 | head -n 1)
+    GATEWAY=$(ip route list | grep default | cut -d' ' -f 3)
+    
+    echo -e "${CYAN}Detected IP: $ADDRESS${NC}"
+    echo -e "${CYAN}Detected Gateway: $GATEWAY${NC}"
+    
+    # Update packages and install requirements
     echo -e "${CYAN}Installing required packages...${NC}"
-    apt-get update -qq
-    apt-get install -y wget unzip > /dev/null 2>&1
-    sleep 1
+    apt update
+    apt install -y pwgen coreutils unzip
     
-    # Download MikroTik CHR
-    VERSIONCHR="$version"
-    echo -e "${CYAN}Downloading MikroTik CHR version ${VERSIONCHR}...${NC}"
-    wget -q "https://download.mikrotik.com/routeros/${VERSIONCHR}/chr-${VERSIONCHR}.img.zip" -O chr.img.zip
+    # Download CHR image
+    echo -e "${CYAN}Downloading MikroTik CHR $VERSIONCHR...${NC}"
+    wget -4 "https://download.mikrotik.com/routeros/$VERSIONCHR/chr-$VERSIONCHR.img.zip" -O chr.img.zip
     
-    if [ ! -f chr.img.zip ]; then
-        echo -e "${RED}Download failed! Please check the version number.${NC}"
-        sleep 3
-        return 1
-    fi
-    
-    # Extract the image
+    # Extract image
     echo -e "${CYAN}Extracting image...${NC}"
-    unzip -q chr.img.zip
-    mv "chr-${VERSIONCHR}.img" chr.img
-    rm chr.img.zip
-    sleep 1
+    gunzip -c chr.img.zip > chr.img
     
-    # Get network configuration
-    echo -e "${CYAN}Detecting network configuration...${NC}"
-    ADDRESS=$(ip addr show "$interface" | grep global | awk '{print $2}' | head -n 1 | cut -d'/' -f1)
-    GATEWAY=$(ip route list | grep default | awk '{print $3}' | head -n 1)
+    # Generate password
+    PASSWORD=$(pwgen 12 1)
     
-    echo "Interface IP: $ADDRESS"
-    echo "Gateway: $GATEWAY"
+    echo -e "${GREEN}Generated credentials:${NC}"
+    echo -e "${YELLOW}Username:${NC} admin"
+    echo -e "${YELLOW}Password:${NC} $PASSWORD"
+    echo ""
     
-    if [ -z "$ADDRESS" ] || [ -z "$GATEWAY" ]; then
-        echo -e "${RED}Failed to detect network configuration!${NC}"
-        echo "Please check interface name: $interface"
-        sleep 3
-        return 1
-    fi
-    
-    # Generate random password
-    PASSWORD=$(generate_password)
-    
-    # Create autorun configuration
+    # Mount image and create autorun script
     echo -e "${CYAN}Creating configuration...${NC}"
-    cat > /tmp/chr-config.rsc << EOF
-/interface ethernet set [ find default-name=ether1 ] name=ether1
-/ip address add address=${ADDRESS}/24 interface=ether1
-/ip route add gateway=${GATEWAY}
-/ip dns set servers=8.8.8.8,1.1.1.1
-/ip service disable telnet
-/user set 0 password=${PASSWORD}
-EOF
-    sleep 1
+    mount -o loop,offset=33571840 chr.img /mnt
     
-    # Mount the image and copy config
-    echo -e "${CYAN}Applying configuration...${NC}"
-    mkdir -p /mnt/chr
-    mount -o loop,offset=512 chr.img /mnt/chr 2>/dev/null || mount -o loop chr.img /mnt/chr
-    mkdir -p /mnt/chr/rw 2>/dev/null
-    cp /tmp/chr-config.rsc /mnt/chr/rw/autorun.rsc 2>/dev/null || cp /tmp/chr-config.rsc /mnt/chr/autorun.rsc
-    umount /mnt/chr 2>/dev/null || true
-    rmdir /mnt/chr 2>/dev/null || true
-    sleep 1
+    echo "/ip address add address=$ADDRESS interface=[/interface ethernet find where name=ether1]" > /mnt/rw/autorun.scr
+    echo "/ip route add gateway=$GATEWAY" >> /mnt/rw/autorun.scr
+    echo "/ip service disable telnet" >> /mnt/rw/autorun.scr
+    echo "/user set 0 name=admin password=$PASSWORD" >> /mnt/rw/autorun.scr
+    echo "/ip dns set server=8.8.8.8,1.1.1.1" >> /mnt/rw/autorun.scr
+    
+    # Unmount filesystems
+    echo -e "${CYAN}Syncing filesystems...${NC}"
+    echo u > /proc/sysrq-trigger
     
     # Write image to disk
-    echo -e "${CYAN}Writing image to disk /dev/${disk}...${NC}"
-    echo 1 > /proc/sys/kernel/sysrq
-    echo u > /proc/sysrq-trigger
-    sleep 2
-    dd if=chr.img bs=1M of=/dev/"$disk" status=progress
-    sync
-    rm chr.img
+    echo -e "${CYAN}Writing image to /dev/$DISK...${NC}"
+    echo -e "${RED}⚠️  ALL DATA ON /dev/$DISK WILL BE DESTROYED!${NC}"
+    dd if=chr.img bs=1024 of=/dev/"$DISK"
     
-    # Display completion message
+    echo -e "${CYAN}Syncing disk...${NC}"
+    echo s > /proc/sysrq-trigger
+    
+    echo -e "${GREEN}Installation completed successfully!${NC}"
     echo ""
-    echo -e "${GREEN}═══════════════════════════════════════════${NC}"
-    echo -e "${GREEN}        Installation Complete!${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════${NC}"
-    echo -e "${YELLOW}Username:${NC} admin"
-    echo -e "${YELLOW}Password:${NC} ${PASSWORD}"
-    echo -e "${GREEN}═══════════════════════════════════════════${NC}"
-    echo -e "${RED}⚠️  SAVE THIS PASSWORD NOW!${NC}"
     echo -e "${YELLOW}Server will reboot in 10 seconds...${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════${NC}"
+    echo -e "${RED}Press Ctrl+C to cancel${NC}"
+    
+    read -t 10 -u 1
+    echo b > /proc/sysrq-trigger
+}
+
+# Automatic installation
+automatic_install() {
+    show_banner
+    echo -e "${GREEN}=== Automatic Installation ===${NC}"
     echo ""
     
-    echo -e "${YELLOW}Press Ctrl+C to cancel reboot or wait 10 seconds...${NC}"
-    sleep 10
-    reboot
+    # Get network interface
+    echo -e "${CYAN}Available network interfaces:${NC}"
+    ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
+    echo ""
+    echo -n -e "${YELLOW}Enter network interface [e.g., eth0, ens3]: ${NC}"
+    read INTERFACE
+    
+    if [ -z "$INTERFACE" ]; then
+        echo -e "${RED}Error: Interface cannot be empty!${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+        return
+    fi
+    
+    # Get disk
+    echo ""
+    echo -e "${CYAN}Available disks:${NC}"
+    lsblk -d -n -o NAME,SIZE | grep -v loop
+    echo ""
+    echo -n -e "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    read DISK
+    
+    if [ -z "$DISK" ]; then
+        echo -e "${RED}Error: Disk cannot be empty!${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+        return
+    fi
+    
+    # Confirmation
+    echo ""
+    echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
+    echo -e "${YELLOW}Installation Summary:${NC}"
+    echo -e "${CYAN}Interface:${NC} $INTERFACE"
+    echo -e "${CYAN}Disk:${NC} /dev/$DISK"
+    echo -e "${CYAN}Version:${NC} 7.19.3"
+    echo -e "${RED}⚠️  ALL DATA ON /dev/$DISK WILL BE LOST!${NC}"
+    echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
+    echo ""
+    echo -n -e "${GREEN}Continue? [yes/no]: ${NC}"
+    read CONFIRM
+    
+    if [[ "$CONFIRM" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        install_mikrotik "$INTERFACE" "$DISK" "7.19.3"
+    else
+        echo -e "${RED}Installation cancelled.${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+    fi
 }
 
-# Function for automatic installation
-automatic_install() {
-    while true; do
-        show_banner
-        echo -e "${GREEN}=== Automatic Installation ===${NC}"
-        echo ""
-        
-        # Show available interfaces
-        echo -e "${CYAN}Available network interfaces:${NC}"
-        ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | sed 's/^[ \t]*//' | grep -v lo | sed 's/://g'
-        echo ""
-        echo -n -e "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
-        read -r interface
-        
-        if [ -z "$interface" ]; then
-            echo -e "${RED}Error: Interface name cannot be empty!${NC}"
-            sleep 2
-            continue
-        fi
-        
-        # Show available disks
-        echo ""
-        echo -e "${CYAN}Available disks:${NC}"
-        lsblk -dno NAME,SIZE,TYPE | grep -E 'disk' | grep -v loop
-        echo ""
-        echo -n -e "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
-        read -r disk
-        
-        if [ -z "$disk" ]; then
-            echo -e "${RED}Error: Disk name cannot be empty!${NC}"
-            sleep 2
-            continue
-        fi
-        
-        # Confirmation
-        echo ""
-        echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
-        echo -e "${YELLOW}You are about to install MikroTik with:${NC}"
-        echo -e "${CYAN}Interface:${NC} $interface"
-        echo -e "${CYAN}Disk:${NC} /dev/$disk"
-        echo -e "${CYAN}Version:${NC} 7.19.3 (default)"
-        echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
-        echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
-        echo ""
-        echo -n -e "${GREEN}Continue? [yes/no]: ${NC}"
-        read -r confirm
-        
-        if [[ "$confirm" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            install_mikrotik "$interface" "$disk" "7.19.3"
-            break
-        else
-            echo -e "${RED}Installation cancelled.${NC}"
-            echo ""
-            echo -n -e "${YELLOW}Press Enter to continue...${NC}"
-            read -r
-        fi
-    done
-}
-
-# Function for custom installation
+# Custom installation
 custom_install() {
-    while true; do
-        show_banner
-        echo -e "${GREEN}=== Custom Installation ===${NC}"
-        echo ""
-        
-        # Show available interfaces
-        echo -e "${CYAN}Available network interfaces:${NC}"
-        ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | sed 's/^[ \t]*//' | grep -v lo | sed 's/://g'
-        echo ""
-        echo -n -e "${YELLOW}Enter network interface name [e.g., eth0, ens3]: ${NC}"
-        read -r interface
-        
-        if [ -z "$interface" ]; then
-            echo -e "${RED}Error: Interface name cannot be empty!${NC}"
-            sleep 2
-            continue
-        fi
-        
-        # Show available disks
-        echo ""
-        echo -e "${CYAN}Available disks:${NC}"
-        lsblk -dno NAME,SIZE,TYPE | grep -E 'disk' | grep -v loop
-        echo ""
-        echo -n -e "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
-        read -r disk
-        
-        if [ -z "$disk" ]; then
-            echo -e "${RED}Error: Disk name cannot be empty!${NC}"
-            sleep 2
-            continue
-        fi
-        
-        # Get MikroTik version
-        echo ""
-        echo -n -e "${YELLOW}Enter MikroTik version [e.g., 7.19.3, 7.18]: ${NC}"
-        read -r version
-        
-        if [ -z "$version" ]; then
-            echo -e "${RED}Error: Version cannot be empty!${NC}"
-            sleep 2
-            continue
-        fi
-        
-        # Confirmation
-        echo ""
-        echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
-        echo -e "${YELLOW}You are about to install MikroTik with:${NC}"
-        echo -e "${CYAN}Interface:${NC} $interface"
-        echo -e "${CYAN}Disk:${NC} /dev/$disk"
-        echo -e "${CYAN}Version:${NC} $version"
-        echo -e "${RED}⚠️  ALL DATA ON /dev/$disk WILL BE LOST!${NC}"
-        echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
-        echo ""
-        echo -n -e "${GREEN}Continue? [yes/no]: ${NC}"
-        read -r confirm
-        
-        if [[ "$confirm" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            install_mikrotik "$interface" "$disk" "$version"
-            break
-        else
-            echo -e "${RED}Installation cancelled.${NC}"
-            echo ""
-            echo -n -e "${YELLOW}Press Enter to continue...${NC}"
-            read -r
-        fi
-    done
+    show_banner
+    echo -e "${GREEN}=== Custom Installation ===${NC}"
+    echo ""
+    
+    # Get network interface
+    echo -e "${CYAN}Available network interfaces:${NC}"
+    ip link show | grep -E '^[0-9]+:' | cut -d':' -f2 | tr -d ' ' | grep -v lo
+    echo ""
+    echo -n -e "${YELLOW}Enter network interface [e.g., eth0, ens3]: ${NC}"
+    read INTERFACE
+    
+    if [ -z "$INTERFACE" ]; then
+        echo -e "${RED}Error: Interface cannot be empty!${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+        return
+    fi
+    
+    # Get disk
+    echo ""
+    echo -e "${CYAN}Available disks:${NC}"
+    lsblk -d -n -o NAME,SIZE | grep -v loop
+    echo ""
+    echo -n -e "${YELLOW}Enter disk name [e.g., vda, sda]: ${NC}"
+    read DISK
+    
+    if [ -z "$DISK" ]; then
+        echo -e "${RED}Error: Disk cannot be empty!${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+        return
+    fi
+    
+    # Get version
+    echo ""
+    echo -n -e "${YELLOW}Enter MikroTik version [e.g., 7.19.3]: ${NC}"
+    read VERSIONCHR
+    
+    if [ -z "$VERSIONCHR" ]; then
+        echo -e "${RED}Error: Version cannot be empty!${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+        return
+    fi
+    
+    # Confirmation
+    echo ""
+    echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
+    echo -e "${YELLOW}Installation Summary:${NC}"
+    echo -e "${CYAN}Interface:${NC} $INTERFACE"
+    echo -e "${CYAN}Disk:${NC} /dev/$DISK"
+    echo -e "${CYAN}Version:${NC} $VERSIONCHR"
+    echo -e "${RED}⚠️  ALL DATA ON /dev/$DISK WILL BE LOST!${NC}"
+    echo -e "${YELLOW}═══════════════════════════════════════════${NC}"
+    echo ""
+    echo -n -e "${GREEN}Continue? [yes/no]: ${NC}"
+    read CONFIRM
+    
+    if [[ "$CONFIRM" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        install_mikrotik "$INTERFACE" "$DISK" "$VERSIONCHR"
+    else
+        echo -e "${RED}Installation cancelled.${NC}"
+        echo -n "Press Enter to return to menu..."
+        read
+    fi
 }
 
-# Main loop
+# Main menu loop
 while true; do
     show_banner
     show_menu
     
     echo -n -e "${YELLOW}Enter your choice [1-3]: ${NC}"
-    read -r choice
+    read CHOICE
     
-    case $choice in
+    case $CHOICE in
         1)
             automatic_install
             ;;
@@ -289,15 +249,13 @@ while true; do
             echo -e "${GREEN}        با موفقیت خارج شدید!${NC}"
             echo -e "${GREEN}        Thank you for using Rapido Server!${NC}"
             echo -e "${GREEN}═══════════════════════════════════════════${NC}"
-            echo ""
-            sleep 2
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid option. Please enter 1, 2, or 3${NC}"
+            echo -e "${RED}Invalid option! Please enter 1, 2, or 3${NC}"
             echo ""
             echo -n -e "${YELLOW}Press Enter to continue...${NC}"
-            read -r
+            read
             ;;
     esac
 done
